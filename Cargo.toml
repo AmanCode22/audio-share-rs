@@ -7,7 +7,7 @@ version = "1.0.0"
 edition = "2021"
 rust-version = "1.77"
 license = "Apache-2.0"
-repository = "https://github.com/your-org/audio-share-rs"
+repository = "https://github.com/AmanCode22/audio-share-rs"
 
 [workspace.dependencies]
 tokio = { version = "1.40", features = [

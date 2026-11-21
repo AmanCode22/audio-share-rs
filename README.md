@@ -61,7 +61,7 @@ advertises itself via mDNS, and shows live per-client stats.
 
 ### Phone — play
 
-Install the APK (built by CI, or `cd android && gradle assembleDebug`) and:
+Install the APK (built by CI, or `cd android && gradle assembleRelease`) and:
 
 1. tap **Scan** to find servers on the network, or type the laptop's IP,
 2. pick your buffer/volume, press **Play**.
@@ -86,7 +86,7 @@ and the Android SDK.
 cargo test --workspace                 # unit + loopback integration tests
 cargo build --release -p ash-cli       # CLI binary
 cargo tauri build                      # desktop bundles (deb/AppImage/dmg/msi/nsis)
-cd android && gradle assembleDebug     # Android APK
+cd android && gradle assembleRelease    # Android release APK (debug-signed without secrets)
 python3 scripts/gen_icons.py           # regenerate desktop icons
 ```
 
@@ -94,14 +94,14 @@ python3 scripts/gen_icons.py           # regenerate desktop icons
 
 | workflow | trigger | what it does |
 |---|---|---|
-| `ci.yml` | push / PR | fmt + clippy + tests + release build on Ubuntu/Windows/macOS, desktop smoke compile, debug APK |
-| `release.yml` | tag `v*` push (or manual) | CLI archives, Tauri bundles (msi/nsis, deb/rpm/AppImage, dmg), signed-or-debug APK, SHA256 sums, GitHub Release |
+| `ci.yml` | push / PR | fmt + clippy + release-profile tests + release build on Ubuntu/Windows/macOS, desktop smoke compile, release APK |
+| `release.yml` | tag `v*` push (or manual) | CLI archives, Tauri bundles (msi/nsis, deb/rpm/AppImage, dmg on macOS ARM64 + Intel), release APK + AAB, SHA256 sums, GitHub Release |
 | dependabot | weekly | cargo + gradle + actions bumps |
 
 Releasing: `git tag v1.0.0 && git push --tags`. Android signing uses
 repository secrets `ANDROID_KEYSTORE_BASE64` (+ `ANDROID_KEYSTORE_PASSWORD`,
-`ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`); without them the APK is
-debug-signed.
+`ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`); without them the release APK/AAB
+is signed with the auto-generated debug key so it stays installable.
 
 ## Firewall notes
 

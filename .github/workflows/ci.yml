@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-latest, macos-14]
+        os: [ubuntu-22.04, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -49,14 +49,14 @@ jobs:
             cargo clippy --workspace --all-targets -- -D warnings
           fi
 
-      - name: Tests (unit + end-to-end loopback)
-        run: cargo test -p ash-core -p ash-cli
+      - name: Tests (unit + end-to-end loopback, release profile)
+        run: cargo test --release -p ash-core -p ash-cli
 
       - name: Build CLI release binary
         run: cargo build --release -p ash-cli
 
   android:
-    name: Android APK (debug)
+    name: Android APK (release)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -71,11 +71,11 @@ jobs:
         with:
           gradle-version: "8.13"
 
-      - name: Build debug APK + run lint
+      - name: Build release APK (debug-signed when no keystore secrets)
         working-directory: android
-        run: gradle assembleDebug
+        run: gradle assembleRelease
 
       - uses: actions/upload-artifact@v4
         with:
-          name: audioshare-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: audioshare-release-apk
+          path: android/app/build/outputs/apk/release/app-release*.apk

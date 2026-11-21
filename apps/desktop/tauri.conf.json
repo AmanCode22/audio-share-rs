@@ -25,7 +25,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "category": "AudioVideo",
+    "category": "Music",
     "shortDescription": "Share your computer's audio over the LAN",
     "longDescription": "Audio Share Rust companion: stream this computer's system audio to phones and laptops, or play a remote server's audio here. GTK/WebKitGTK based on Linux.",
     "icon": [

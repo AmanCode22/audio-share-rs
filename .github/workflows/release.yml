@@ -2,10 +2,11 @@ name: Release
 
 # Triggered by pushing a version tag (e.g. `git push origin v1.0.0`) —
 # builds every platform artifact and publishes a GitHub Release:
-#   Windows : ashr.exe (zip) + NSIS installer + MSI
-#   Linux   : ashr (tar.gz) + deb + rpm + AppImage
-#   macOS   : ashr (tar.gz) + DMG
-#   Android : release APK (signed when keystore secrets are present)
+#   Windows     : ashr.exe (zip) + NSIS installer + MSI
+#   Linux       : ashr (tar.gz) + deb + rpm + AppImage
+#   macOS ARM64 : ashr (tar.gz) + DMG     (macos-latest)
+#   macOS x64   : ashr (tar.gz) + DMG     (macos-15-intel)
+#   Android     : release APK + AAB (signed when keystore secrets are present)
 
 on:
   push:
@@ -39,7 +40,11 @@ jobs:
             bundles: "deb,rpm,appimage"
             archive: tar.gz
           - label: macos-arm64
-            os: macos-14
+            os: macos-latest
+            bundles: "dmg"
+            archive: tar.gz
+          - label: macos-x64
+            os: macos-15-intel
             bundles: "dmg"
             archive: tar.gz
     runs-on: ${{ matrix.os }}
@@ -126,32 +131,36 @@ jobs:
           gradle-version: "8.13"
 
       - name: Decode signing keystore (optional)
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
         id: keystore
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "${ANDROID_KEYSTORE_BASE64}" | base64 -d > release.keystore
-          echo "file=$(pwd)/release.keystore" >> "$GITHUB_OUTPUT"
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > release.keystore
+            echo "file=$(pwd)/release.keystore" >> "$GITHUB_OUTPUT"
+          else
+            echo "file=" >> "$GITHUB_OUTPUT"
+          fi
 
-      - name: Build release APK
+      - name: Build release APK + AAB
         working-directory: android
         env:
           ANDROID_KEYSTORE_FILE: ${{ steps.keystore.outputs.file }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: gradle assembleRelease
+        run: gradle assembleRelease bundleRelease
 
-      - name: Collect APK
+      - name: Collect APK + AAB
         run: |
           mkdir -p dist
           cp android/app/build/outputs/apk/release/app-release*.apk dist/audioshare-rs-android.apk
-          sha256sum dist/audioshare-rs-android.apk > dist/audioshare-rs-android.apk.sha256
+          cp android/app/build/outputs/bundle/release/app-release.aab dist/audioshare-rs-android.aab
+          sha256sum dist/audioshare-rs-android.apk dist/audioshare-rs-android.aab > dist/SHA256SUMS-android.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: android-apk
+          name: android-apk-aab
           path: dist/
 
   publish:
@@ -171,7 +180,7 @@ jobs:
       - name: Flatten layout
         run: |
           mkdir -p release
-          find artifacts -type f \( -name "*.zip" -o -name "*.tar.gz" -o -name "*.sha256" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.dmg" -o -name "*.msi" -o -name "*.exe" -o -name "*.apk" -o -name "SHA256SUMS.txt" \) -exec cp {} release/ \;
+          find artifacts -type f \( -name "*.zip" -o -name "*.tar.gz" -o -name "*.sha256" -o -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.dmg" -o -name "*.msi" -o -name "*.exe" -o -name "*.apk" -o -name "*.aab" -o -name "SHA256SUMS*.txt" \) -exec cp {} release/ \;
           ls -la release/
 
       - name: Create / update release
