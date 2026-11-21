@@ -94,10 +94,10 @@ pub fn open_capturer(
         SourceSelection::Loopback { device } => {
             #[cfg(target_os = "windows")]
             {
-                return Ok(Box::new(wasapi_loop::WasapiLoopCapturer::new(
+                Ok(Box::new(wasapi_loop::WasapiLoopCapturer::new(
                     device.clone(),
                     encoding,
-                )?));
+                )?))
             }
             #[cfg(not(target_os = "windows"))]
             {

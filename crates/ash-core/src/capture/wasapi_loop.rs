@@ -61,8 +61,8 @@ impl WasapiLoopCapturer {
         let audio_client = dev.get_iaudioclient().map_err(err)?;
         // The shared-mode mix format is always 32-bit float interleaved.
         let mixfmt: WaveFormat = audio_client.get_mixformat().map_err(err)?;
-        let channels = mixfmt.get_nchannels() as u16;
-        let sample_rate = mixfmt.get_samplespersec() as u32;
+        let channels = mixfmt.get_nchannels();
+        let sample_rate = mixfmt.get_samplespersec();
         if channels == 0 || !(8_000..=384_000).contains(&sample_rate) {
             bail!("implausible mix format: {channels} ch @ {sample_rate} Hz");
         }
