@@ -20,6 +20,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.DataInputStream
 import java.io.DataOutputStream
+import java.nio.ByteBuffer
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
@@ -162,7 +163,7 @@ class NetClient(
             try {
                 if (loudnessGainMb > 0) {
                     enhancer = LoudnessEnhancer(track.audioSessionId).also {
-                        it.setTargetGain(loudnessGainMb.toFloat())
+                        it.setTargetGain(loudnessGainMb)
                         it.setEnabled(true)
                     }
                 }

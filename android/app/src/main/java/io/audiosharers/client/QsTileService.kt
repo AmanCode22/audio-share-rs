@@ -23,7 +23,7 @@ class QsTileService : TileService() {
 
     override fun onClick() {
         super.onClick()
-        val tile = tile ?: return
+        val tile = qsTile ?: return
         val playing = PlayerStateBus.state.value is PlayerState.Playing
         scope.launch {
             if (playing) {
@@ -43,7 +43,7 @@ class QsTileService : TileService() {
     }
 
     private fun updateTile() {
-        val tile = tile ?: return
+        val tile = qsTile ?: return
         val playing = PlayerStateBus.state.value is PlayerState.Playing
         tile.state = if (playing) Tile.STATE_ACTIVE else Tile.STATE_INACTIVE
         tile.subtitle = if (playing) getString(R.string.qs_active) else getString(R.string.qs_inactive)

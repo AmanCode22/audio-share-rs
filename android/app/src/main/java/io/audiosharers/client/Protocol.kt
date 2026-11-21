@@ -13,7 +13,8 @@ import java.nio.ByteOrder
  * UDP registration/keepalive: session u32le
  */
 object Protocol {
-    const val MAGIC: ByteArray = byteArrayOf('A'.code.toByte(), 'S'.code.toByte(), 'R'.code.toByte(), '2'.code.toByte())
+    // Kotlin forbids `const` for ByteArray; a plain val in the object is fine.
+    val MAGIC: ByteArray = byteArrayOf('A'.code.toByte(), 'S'.code.toByte(), 'R'.code.toByte(), '2'.code.toByte())
     const val VERSION: Int = 2
 
     const val TYPE_HELLO: Int = 1

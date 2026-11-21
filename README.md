@@ -87,7 +87,8 @@ cargo test --workspace                 # unit + loopback integration tests
 cargo build --release -p ash-cli       # CLI binary
 cargo tauri build                      # desktop bundles (deb/AppImage/dmg/msi/nsis)
 cd android && gradle assembleRelease    # Android release APK (debug-signed without secrets)
-python3 scripts/gen_icons.py           # regenerate desktop icons
+python3 scripts/gen_icons.py                      # source app-icon.png
+cargo tauri icon apps/desktop/app-icon.png        # .ico/.icns/.png set for bundlers
 ```
 
 ## CI/CD (YAML builds)

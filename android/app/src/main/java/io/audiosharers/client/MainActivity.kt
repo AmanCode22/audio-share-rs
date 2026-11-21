@@ -19,16 +19,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularWavyProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialExpressiveTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MotionScheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Switch
@@ -49,7 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 
 /**
- * Material 3 Expressive UI: connect to a laptop running `ashr serve`,
+ * Material 3 UI: connect to a laptop running `ashr serve`,
  * tune latency/volume, and monitor the stream live.
  */
 class MainActivity : ComponentActivity() {
@@ -64,17 +60,13 @@ class MainActivity : ComponentActivity() {
         }
         val store = SettingsStore(applicationContext)
         setContent {
-            MaterialExpressiveTheme(
-                motionScheme = MotionScheme.expressive(),
-                colorScheme = MaterialTheme.colorScheme,
-            ) {
+            MaterialTheme {
                 HomeScreen(store)
             }
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(store: SettingsStore) {
     val context = LocalContext.current
@@ -145,7 +137,6 @@ fun HomeScreen(store: SettingsStore) {
                                 scanning = false
                             }
                         },
-                        shapes = IconButtonDefaults.shapes(),
                     ) { Text(if (scanning) "…" else "Scan") }
                     Text("find servers on this Wi-Fi", style = MaterialTheme.typography.bodySmall)
                 }
@@ -206,7 +197,6 @@ fun HomeScreen(store: SettingsStore) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(72.dp),
-            shapes = IconButtonDefaults.shapes(),
             colors = IconButtonDefaults.filledIconButtonColors(
                 containerColor = if (playing) MaterialTheme.colorScheme.errorContainer
                 else MaterialTheme.colorScheme.primaryContainer,
@@ -225,7 +215,7 @@ fun HomeScreen(store: SettingsStore) {
                 when (val s = state) {
                     is PlayerState.Idle -> StatusText("Idle")
                     is PlayerState.Connecting -> Row(verticalAlignment = Alignment.CenterVertically) {
-                        CircularWavyProgressIndicator(modifier = Modifier.size(22.dp))
+                        CircularProgressIndicator(modifier = Modifier.size(22.dp), strokeWidth = 2.dp)
                         Spacer(Modifier.width(10.dp))
                         StatusText("Connecting…")
                     }
