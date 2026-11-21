@@ -1,0 +1,25 @@
+# Rust
+/target
+**/*.rs.bk
+
+# Tauri
+apps/desktop/gen
+
+# Android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/*.iml
+android/.cxx/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+server.log

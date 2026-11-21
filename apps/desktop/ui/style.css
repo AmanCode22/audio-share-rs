@@ -1,0 +1,199 @@
+/* AudioShare Companion — libadwaita-inspired GNOME styling (GTK on Linux). */
+
+:root {
+  --adw-window-bg: #1e1e25;
+  --adw-card-bg: #2e2e38;
+  --adw-card-raised: #363642;
+  --adw-fg: #f2f2f7;
+  --adw-dim: #9a9aa8;
+  --adw-accent: #3584e4;
+  --adw-accent-hover: #3f6ff0;
+  --adw-success: #33d17a;
+  --adw-warning: #f6d32d;
+  --adw-destructive: #e01b24;
+  --adw-border: rgba(255, 255, 255, 0.09);
+  --adw-radius: 14px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --adw-window-bg: #f6f5f4;
+    --adw-card-bg: #ffffff;
+    --adw-card-raised: #ffffff;
+    --adw-fg: #25252d;
+    --adw-dim: #6e6e79;
+    --adw-border: rgba(0, 0, 0, 0.12);
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Inter", "Cantarell", "Segoe UI", system-ui, sans-serif;
+  background: var(--adw-window-bg);
+  color: var(--adw-fg);
+  font-size: 14.5px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- header bar ---- */
+.headerbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--adw-card-bg);
+  border-bottom: 1px solid var(--adw-border);
+  -webkit-app-region: drag;
+}
+.hb-left { display: flex; align-items: center; gap: 10px; }
+.hb-icon { width: 28px; height: 28px; border-radius: 8px; }
+.hb-titles h1 { font-size: 15px; margin: 0; font-weight: 700; }
+.hb-subtitle { font-size: 12px; color: var(--adw-dim); }
+.pill {
+  background: color-mix(in srgb, var(--adw-dim) 25%, transparent);
+  color: var(--adw-fg);
+  border-radius: 999px;
+  padding: 3px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.pill.ok { background: color-mix(in srgb, var(--adw-success) 26%, transparent); color: var(--adw-success); }
+.pill.err { background: color-mix(in srgb, var(--adw-destructive) 26%, transparent); color: var(--adw-destructive); }
+
+/* ---- tabs ---- */
+.tabs { display: flex; gap: 4px; padding: 10px 16px 0; }
+.tab {
+  border: none;
+  background: transparent;
+  color: var(--adw-dim);
+  padding: 8px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 10px 10px 0 0;
+  cursor: pointer;
+}
+.tab.active { background: var(--adw-card-bg); color: var(--adw-fg); }
+
+main { padding: 12px 16px 24px; }
+.pane { display: none; flex-direction: column; gap: 12px; }
+.pane.active { display: flex; }
+
+/* ---- cards (Adwaita boxed lists) ---- */
+.card {
+  background: var(--adw-card-bg);
+  border: 1px solid var(--adw-border);
+  border-radius: var(--adw-radius);
+  padding: 16px 18px;
+}
+.card h2 { font-size: 15px; margin: 0 0 4px; font-weight: 700; }
+.dim { color: var(--adw-dim); font-size: 12.5px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 10px 14px;
+  align-items: center;
+  margin: 14px 0 6px;
+}
+.form-grid label { color: var(--adw-dim); font-weight: 600; font-size: 13px; }
+
+input[type="text"], input[type="number"], select {
+  background: var(--adw-window-bg);
+  color: var(--adw-fg);
+  border: 1px solid var(--adw-border);
+  border-radius: 9px;
+  padding: 8px 10px;
+  font: inherit;
+  width: 100%;
+}
+input:focus-visible, select:focus-visible {
+  outline: 2px solid var(--adw-accent);
+  outline-offset: -1px;
+}
+
+input[type="range"] { accent-color: var(--adw-accent); width: 100%; }
+
+/* GTK-style switch */
+.switch-wrap { position: relative; display: inline-block; }
+.gtk-switch { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.switch-track {
+  display: inline-block;
+  width: 46px; height: 26px;
+  background: var(--adw-window-bg);
+  border: 1px solid var(--adw-border);
+  border-radius: 999px;
+  transition: background .18s ease;
+  vertical-align: middle;
+  position: relative;
+}
+.switch-track::after {
+  content: "";
+  position: absolute;
+  top: 2px; left: 3px;
+  width: 20px; height: 20px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,.4);
+  transition: transform .18s ease;
+}
+.gtk-switch:checked + .switch-track { background: var(--adw-accent); }
+.gtk-switch:checked + .switch-track::after { transform: translateX(19px); }
+
+/* buttons */
+.btn-row { display: flex; gap: 10px; margin-top: 14px; align-items: center; }
+.btn {
+  border: 1px solid var(--adw-border);
+  background: var(--adw-card-raised);
+  color: var(--adw-fg);
+  padding: 9px 20px;
+  border-radius: 9px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter .12s ease;
+}
+.btn:hover:not(:disabled) { filter: brightness(1.12); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn.suggested { background: var(--adw-accent); border-color: transparent; }
+.btn.destructive { background: var(--adw-destructive); border-color: transparent; }
+.btn.flat { background: transparent; }
+
+/* stats */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+.stat {
+  background: var(--adw-window-bg);
+  border: 1px solid var(--adw-border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-value { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.stat-label { font-size: 11.5px; color: var(--adw-dim); text-transform: uppercase; letter-spacing: .06em; }
+
+/* tables */
+.list {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.list th {
+  text-align: left;
+  color: var(--adw-dim);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--adw-border);
+}
+.list td { padding: 7px 10px; border-bottom: 1px solid var(--adw-border); font-variant-numeric: tabular-nums; }
+.list tr:last-child td { border-bottom: none; }

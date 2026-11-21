@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audio Share Companion</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="headerbar">
+    <div class="hb-left">
+      <img src="assets/icon.png" alt="" class="hb-icon" onerror="this.style.display='none'" />
+      <div class="hb-titles">
+        <h1>Audio Share Companion</h1>
+        <span class="hb-subtitle" id="subtitle">not sharing</span>
+      </div>
+    </div>
+    <div class="hb-right">
+      <span class="pill" id="conn-pill">idle</span>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab active" id="tab-server" role="tab">Host</button>
+    <button class="tab" id="tab-client" role="tab">Play</button>
+  </nav>
+
+  <main>
+    <!-- ============ SERVER PANE ============ -->
+    <section id="pane-server" class="pane active">
+      <div class="card">
+        <h2>Share this computer's audio</h2>
+        <p class="dim">Phones and laptops connect to the address below and hear whatever this machine plays.</p>
+        <div class="form-grid">
+          <label for="srv-name">Name</label>
+          <input id="srv-name" type="text" value="AudioShare-RS" maxlength="40" />
+
+          <label for="srv-host">Bind address</label>
+          <select id="srv-host"></select>
+
+          <label for="srv-port">Port</label>
+          <input id="srv-port" type="number" min="1024" max="65535" value="65530" />
+
+          <label for="srv-source">Source</label>
+          <select id="srv-source">
+            <option value="loopback">System loopback (what you hear)</option>
+            <option value="mic">Microphone / input</option>
+            <option value="sine">Sine generator (test)</option>
+          </select>
+
+          <label for="srv-device">Device</label>
+          <select id="srv-device"><option value="">Default</option></select>
+
+          <label for="srv-encoding">Encoding</label>
+          <select id="srv-encoding">
+            <option value="s16">PCM 16-bit (low bandwidth)</option>
+            <option value="f32">PCM float (bit-exact)</option>
+          </select>
+
+          <label for="srv-block">Block size <span class="dim" id="srv-block-label">20 ms</span></label>
+          <input id="srv-block" type="range" min="5" max="60" step="5" value="20" />
+
+          <label for="srv-mdns">Advertise on LAN (mDNS)</label>
+          <div class="switch-wrap">
+            <input type="checkbox" id="srv-mdns" class="gtk-switch" checked /><span class="switch-track" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button id="srv-start" class="btn suggested">Start sharing</button>
+          <button id="srv-stop" class="btn destructive" disabled>Stop</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Status</h2>
+        <div class="stat-grid">
+          <div class="stat"><span class="stat-value" id="st-format">—</span><span class="stat-label">format</span></div>
+          <div class="stat"><span class="stat-value" id="st-clients">0</span><span class="stat-label">listeners</span></div>
+          <div class="stat"><span class="stat-value" id="st-bytes">0 B</span><span class="stat-label">sent</span></div>
+          <div class="stat"><span class="stat-value" id="st-drops">0</span><span class="stat-label">drops</span></div>
+        </div>
+        <table class="list" id="peer-table" hidden>
+          <thead><tr><th>Client</th><th>Mode</th><th>RTT</th><th>Sent</th></tr></thead>
+          <tbody id="peer-rows"></tbody>
+        </table>
+        <p class="dim" id="connect-hint"></p>
+      </div>
+    </section>
+
+    <!-- ============ CLIENT PANE ============ -->
+    <section id="pane-client" class="pane">
+      <div class="card">
+        <h2>Play a server's audio here</h2>
+        <p class="dim">This laptop becomes the speaker of another computer.</p>
+        <div class="btn-row">
+          <button id="scan-btn" class="btn flat">Scan LAN</button>
+          <span class="dim" id="scan-status"></span>
+        </div>
+        <table class="list" id="mdns-table" hidden>
+          <thead><tr><th>Server</th><th>Address</th><th></th></tr></thead>
+          <tbody id="mdns-rows"></tbody>
+        </table>
+        <div class="form-grid">
+          <label for="cli-host">Host</label>
+          <input id="cli-host" type="text" placeholder="192.168.1.10" />
+
+          <label for="cli-port">Port</label>
+          <input id="cli-port" type="number" min="1024" max="65535" value="65530" />
+
+          <label for="cli-device">Output device</label>
+          <select id="cli-device"><option value="">System default</option></select>
+
+          <label for="cli-buffer">Buffer <span class="dim" id="cli-buffer-label">120 ms</span></label>
+          <input id="cli-buffer" type="range" min="40" max="400" step="20" value="120" />
+
+          <label for="cli-volume">Volume <span class="dim" id="cli-volume-label">100%</span></label>
+          <input id="cli-volume" type="range" min="0" max="200" step="5" value="100" />
+
+          <label for="cli-tcp">TCP audio (no UDP)</label>
+          <div class="switch-wrap">
+            <input type="checkbox" id="cli-tcp" class="gtk-switch" /><span class="switch-track" aria-hidden="true"></span>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button id="cli-start" class="btn suggested">Connect</button>
+          <button id="cli-stop" class="btn destructive" disabled>Disconnect</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Status</h2>
+        <div class="stat-grid">
+          <div class="stat"><span class="stat-value" id="cl-buffer">—</span><span class="stat-label">buffered</span></div>
+          <div class="stat"><span class="stat-value" id="cl-recv">0 B</span><span class="stat-label">received</span></div>
+          <div class="stat"><span class="stat-value" id="cl-loss">0</span><span class="stat-label">lost pkts</span></div>
+          <div class="stat"><span class="stat-value" id="cl-rtt">—</span><span class="stat-label">RTT</span></div>
+        </div>
+        <p class="dim" id="cl-msg"></p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

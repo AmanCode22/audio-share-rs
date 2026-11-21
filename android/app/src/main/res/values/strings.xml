@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Audio Share</string>
+    <string name="qs_tile_label">Audio Share</string>
+    <string name="qs_active">Playing</string>
+    <string name="qs_inactive">Not playing</string>
+    <string name="notif_channel_name">Audio playback</string>
+    <string name="notif_title">Audio Share</string>
+    <string name="notif_text">Streaming from your computer</string>
+    <string name="notif_stop">Stop</string>
+</resources>

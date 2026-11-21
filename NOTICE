@@ -1,0 +1,21 @@
+Audio Share Rust
+Copyright 2024-2026 Audio Share Rust contributors
+
+This project is a from-scratch Rust re-creation of mkckr0/audio-share
+(https://github.com/mkckr0/audio-share), Copyright 2022-2024 mkckr0,
+licensed under the Apache License, Version 2.0. Its protocol design
+(TCP control + UDP PCM data, heartbeat keep-alives), the Linux virtual
+sink configuration documented in the README, and the Android feature set
+(quick-settings tile, loudness boost) inspired this implementation.
+
+The wire protocol used here ("ASR2", version 2) is a new, self-describing
+framing and is NOT compatible with the original project's protobuf-based
+protocol; original Android builds cannot connect to this server and vice
+versa.
+
+This product includes software developed as part of the Rust project and
+the following notable dependencies (all under MIT/Apache-2.0-compatible
+licenses):
+- tokio (MIT), cpal (Apache-2.0), wasapi-rs (MIT), mdns-sd (MIT),
+  if-addrs (MIT/Apache-2.0), clap (MIT/Apache-2.0), rubato-free custom
+  linear resampler, Tauri (MIT/Apache-2.0), AndroidX / Compose (Apache-2.0).

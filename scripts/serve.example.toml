@@ -1,0 +1,9 @@
+# Example configuration for `ashr serve --config serve.toml`
+# CLI flags override file values.
+
+host = "0.0.0.0"
+port = 65530
+encoding = "s16"      # s16 | f32
+block_ms = 20
+name = "Living room laptop"
+no_mdns = false

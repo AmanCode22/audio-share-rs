@@ -1,0 +1,24 @@
+[package]
+name = "audioshare-companion"
+description = "Laptop/desktop companion app for Audio Share Rust (Tauri 2, GTK-backed on Linux)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[lib]
+name = "companion_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { workspace = true }
+serde_json = "1"
+tokio.workspace = true
+tracing.workspace = true
+anyhow.workspace = true
+ash-core = { path = "../../crates/ash-core", features = ["audio"] }
