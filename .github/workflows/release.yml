@@ -109,7 +109,7 @@ jobs:
           find target/release/bundle -type f \( -name "*.deb" -o -name "*.rpm" -o -name "*.AppImage" -o -name "*.dmg" \) -exec cp {} dist/ \;
           (command -v sha256sum >/dev/null && find dist -type f -exec sha256sum {} \; > dist/SHA256SUMS.txt) || true
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: desktop-${{ matrix.label }}
           path: dist/
@@ -158,7 +158,7 @@ jobs:
           cp android/app/build/outputs/bundle/release/app-release.aab dist/audioshare-rs-android.aab
           sha256sum dist/audioshare-rs-android.apk dist/audioshare-rs-android.aab > dist/SHA256SUMS-android.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: android-apk-aab
           path: dist/
