@@ -75,7 +75,7 @@ jobs:
         working-directory: android
         run: gradle assembleRelease
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: audioshare-release-apk
           path: android/app/build/outputs/apk/release/app-release*.apk
