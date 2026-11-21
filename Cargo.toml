@@ -28,7 +28,7 @@ toml = "0.8"
 clap = { version = "4.5", features = ["derive"] }
 rand = "0.8"
 if-addrs = "0.13"
-mdns-sd = "0.11"
+mdns-sd = "0.22"
 cpal = "0.15"
 
 [profile.release]
